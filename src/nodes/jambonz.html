@@ -20,7 +20,7 @@
         name: l.name,
         voices: l.voices
       };
-      googleLanguageOptions += `<option value="${l.code}">${l.name}</option>`;        
+      googleLanguageOptions += `<option value="${l.code}">${l.name}</option>`;
     });
   });
   var awsUrl = (RED.settings.httpNodeRoot || RED.settings.httpAdminRoot || "").replace(/\/$/, "") + '/awsTts';
@@ -31,7 +31,7 @@
         name: l.name,
         voices: l.voices
       };
-      awsLanguageOptions += `<option value="${l.code}">${l.name}</option>`;        
+      awsLanguageOptions += `<option value="${l.code}">${l.name}</option>`;
     });
   });
   var googleSttUrl = (RED.settings.httpNodeRoot || RED.settings.httpAdminRoot || "").replace(/\/$/, "") + '/googleSpeech';
@@ -39,7 +39,7 @@
     //console.log('retrieved data for recognizer voices: ' + JSON.stringify(data));
     data.forEach(function(l) {
       //mapSpeechRec[l.code] = l.name;
-      sttLanguagesGoogle += `<option value="${l.code}">${l.name}</option>`;        
+      sttLanguagesGoogle += `<option value="${l.code}">${l.name}</option>`;
     });
   });
   var awsSttUrl = (RED.settings.httpNodeRoot || RED.settings.httpAdminRoot || "").replace(/\/$/, "") + '/awsSpeech';
@@ -47,7 +47,7 @@
     //console.log('retrieved data for recognizer voices: ' + JSON.stringify(data));
     data.forEach(function(l) {
       //mapSpeechRec[l.code] = l.name;
-      sttLanguagesAws += `<option value="${l.code}">${l.name}</option>`;        
+      sttLanguagesAws += `<option value="${l.code}">${l.name}</option>`;
     });
   });
 
@@ -56,7 +56,7 @@
     console.log('retrieved data for dialogflow languages: ' + JSON.stringify(data));
     data.forEach(function(l) {
       mapDialogflow[l.code] = l.name;
-      dialogFlowOptions += `<option value="${l.code}">${l.name}</option>`;        
+      dialogFlowOptions += `<option value="${l.code}">${l.name}</option>`;
     });
   });
 
@@ -93,7 +93,7 @@
     var mixtypeElem = $('#node-input-mixtype');
 
     console.log('entering prepareSttControls');
-    
+
     var setTranscriptionLanguage = function(vendor) {
       console.log(`setting transcription vendor to ${vendor}`);
       languageElem.find('option').remove();
@@ -135,7 +135,7 @@
       console.log(`initializing transcription language to ${node.recognizerlang}`);
       languageElem.val(node.recognizerlang);
     }
-  
+
     var onLangChanged = function() {
       var lang = languageElem.find(':selected').val();
       console.log(`lang dropdown changed to ${lang}`);
@@ -164,7 +164,7 @@
     var xlangElem = $('#node-input-xlang');
     var voiceElem = $('#node-input-voice');
     var xvoiceElem = $('#node-input-xvoice');
-  
+
     console.log(`oneditprepare tts vendor: ${node.vendor}, lang: ${node.lang}, voice: ${node.voice}`);
 
     var onVendorChanged = function() {
@@ -177,7 +177,7 @@
       xvoiceElem.find('option').remove();
 
       switch (v) {
-        case 'default': 
+        case 'default':
           xlangElem.append('<option value="default" selected>--application default--</option>');
           xvoiceElem.append('<option value="default" selected>--application default--</option>');
           langElem.val('default');
@@ -295,7 +295,7 @@
     inputs:1,
     outputs:1,
     icon: "font-awesome/fa-cubes",
-    label: function() { 
+    label: function() {
       return this.name || 'conference';
     },
     oneditprepare: function() {
@@ -336,7 +336,7 @@
       inputs:1,
       outputs:1,
       icon: "font-awesome/fa-cubes",
-      label: function() { 
+      label: function() {
         return this.name || 'dequeue';
       },
       oneditprepare: function() {
@@ -518,8 +518,8 @@
               .appendTo(row2);
 
             $('<input/>',{
-              class:"node-input-target-property-authuser", 
-              type:"text", 
+              class:"node-input-target-property-authuser",
+              type:"text",
               placeholder: '(if required by remote endpoint)'
             })
               .appendTo(row2);
@@ -527,13 +527,13 @@
             $('<label style="padding-top:8px; padding-right:20px">Auth Password:</label>')
               .appendTo(row3);
             $('<input/>',{
-              class:"node-input-target-property-authpassword", 
-              type:"text", 
+              class:"node-input-target-property-authpassword",
+              type:"text",
               placeholder: '(if required by remote endpoint)'
             })
               .appendTo(row3);
 
-            $('<label style="padding-top:8px; padding-right:20px">Trunk:</label>')
+            $('<label style="padding-top:8px; padding-right:20px">Trunkkk:</label>')
               .appendTo(row5);
 
             $('<input/>',{
@@ -542,23 +542,23 @@
               placeholder: 'Specify the name of the trunk used for this outbound call'
             })
               .appendTo(row5);
-            
+
             selectField.on('change', function() {
               var type = $(this).val();
               console.log(`type changed to ${type}`);
               var input = $(this).parent().find('input.red-ui-typedInput-input');
               input.focus();
               switch (type) {
-                case 'phone': 
+                case 'phone':
                   input.attr('placeholder', 'E.164 number to dial');
                   break;
                 case 'teams':
                   input.attr('placeholder', 'Microsoft Teams phone number or extension');
                   break;
-                case 'user': 
+                case 'user':
                   input.attr('placeholder', 'user@domain');
                   break;
-                case 'sip': 
+                case 'sip':
                   input.attr('placeholder', 'sip:number@ip-address');
                   break;
               }
@@ -591,7 +591,7 @@
             switch (target.type) {
               case 'phone':
                 trunkfield.val(target.trunk);
-              case 'sip': 
+              case 'sip':
                 userfield.val(target.user);
                 passfield.val(target.pass);
               default:
@@ -635,14 +635,14 @@
             let fragment = document.createDocumentFragment();
             var row1 = $('<div/>',{style:"display:flex;"}).appendTo(fragment);
             $('<input/>', {
-              class:"node-input-header-property-name", 
-              type:"text", 
+              class:"node-input-header-property-name",
+              type:"text",
               placeholder: 'SIP Header'
             })
               .appendTo(row1);
             $('<input/>', {
-              class:"node-input-value-property-name", 
-              type:"text", 
+              class:"node-input-value-property-name",
+              type:"text",
               placeholder: 'value'
             })
               .appendTo(row1);
@@ -838,7 +838,7 @@
       inputs:1,
       outputs:1,
       icon: "font-awesome/fa-cubes",
-      label: function() { 
+      label: function() {
         return this.name || 'enqueue';
       },
       oneditprepare: function() {
@@ -939,7 +939,7 @@
         var enableDtmf = function(enabled) {
           console.log(`enable dtmf: ${enabled}`);
           if (enabled) $('#dtmf-input-container').show();
-          else $('#dtmf-input-container').hide();          
+          else $('#dtmf-input-container').hide();
         }
 
         $('#node-input-speechinput').change(function() {
@@ -1213,7 +1213,7 @@
     inputs:1,
     outputs:1,
     icon: "font-awesome/fa-cubes",
-    label: function() { 
+    label: function() {
       return this.name || 'message';
     },
     oneditprepare: function() {
@@ -1298,7 +1298,7 @@
     inputs:1,
     outputs:1,
     icon: "font-awesome/fa-cubes",
-    label: function() { 
+    label: function() {
       return this.name || 'redirect';
     },
     oneditprepare: function() {
@@ -1389,7 +1389,7 @@
       accountSid: {type: 'text'},
       apiToken: {type: 'text'}
     },
-    label: function() { 
+    label: function() {
       return this.credentials ? this.credentials.url : null;
     },
     oneditprepare: function() {
@@ -1403,7 +1403,7 @@
       accessKey: {type: 'text'},
       secretAccessKey: {type: 'text'}
     },
-    label: function() { 
+    label: function() {
       if (!this.credentials) return null;
       const akey = this.credentials.accessKey;
       let mask = '';
@@ -1442,7 +1442,7 @@
       inputs:1,
       outputs:1,
       icon: "font-awesome/fa-cubes",
-      label: function() { 
+      label: function() {
         return this.name || (this.action ? `LCC - ${this.action}` : 'LCC');
       },
       oneditprepare: function() {
@@ -1494,7 +1494,7 @@
           console.log(`language changed to ${node.lang}`);
           setVoice(node.vendor, node.lang)
         }
-      
+
         var onVoiceChanged = function() {
           node.voice = voiceElem.find(':selected').val();
           console.log(`voice changed to ${node.voice}`);
@@ -1505,7 +1505,7 @@
           voiceElem.find('option').remove();
 
           switch (v) {
-            case 'default': 
+            case 'default':
               langElem.append('<option value="default" selected>--application default--</option>');
               voiceElem.append('<option value="default" selected>--application default--</option>');
               node.lang = 'default';
@@ -1573,7 +1573,7 @@
       inputs:1,
       outputs:1,
       icon: "font-awesome/fa-cubes",
-      label: function() { 
+      label: function() {
         return this.name || 'create call';
       },
       oneditprepare: function() {
@@ -1661,7 +1661,7 @@
       inputs:1,
       outputs:1,
       icon: "font-awesome/fa-cubes",
-      label: function() { 
+      label: function() {
         return this.name || 'create sms';
       },
       oneditprepare: function() {
@@ -1731,7 +1731,7 @@
 <h3>Details</h3>
 The user auth command is used to authenticate a user based on the sip digest they presented and a password retrieved by some means by the application.
 You may provide either a plaintext password, or a precomputed hash based on <a href="https://tools.ietf.org/html/rfc2617">RFC 2617</a>, i.e. MD5( username ":" realm ":" password ).<br/><br/>
-It is valid to provide neither the plaintext nor hashed password, and in this case the user authentication will fail.  
+It is valid to provide neither the plaintext nor hashed password, and in this case the user authentication will fail.
 It is useful to do this, for instance, when either the presented domain or username are unrecognized.<br/><br/>
 The output of this node is to set <code>msg.authResponse</code> accordingly, and the <code>webhook out</code> node should then be used to send the result back to the jambonz server.
 <h3>References</h3>
@@ -2016,7 +2016,7 @@ The dequeue verb removes the a call from the front of a specified queue and brid
         <label for="node-input-diarizationmax">Max speaker count</label>
         <input type="text" id="node-input-diarizationmax" placeholder="6">
         <input type="hidden" id="node-input-diarizationmaxType">
-      </div>    
+      </div>
       <div class="form-row">
         <label for="node-input-interactiontype">Type of Interaction</label>
         <select id="node-input-interactiontype">
@@ -2437,7 +2437,7 @@ The leave verb transfers a call out of a queue. The call then returns to the flo
   <div class="form-row">
     <label for="node-input-aws">AWS credentials</label>
     <input type="text" id="node-input-aws">
-  </div>  
+  </div>
   <div class="form-row">
     <label for="node-input-bot">Bot ID</label>
     <input type="text" id="node-input-bot" placeholder="bot name">
@@ -2706,7 +2706,7 @@ The pause verb waits a specified number of seconds before continuing to execute 
         <label for="node-input-diarizationmax">Max speaker count</label>
         <input type="text" id="node-input-diarizationmax" placeholder="6">
         <input type="hidden" id="node-input-diarizationmaxType">
-      </div>    
+      </div>
       <div class="form-row">
         <label for="node-input-interactiontype">Type of Interaction</label>
         <select id="node-input-interactiontype">
@@ -2832,7 +2832,7 @@ The listen verb establishes a connection to a websocket server and sends live au
     <label for="node-input-provider">SMS Provider</label>
     <input type="text" id="node-input-provider">
     <input type="hidden" id="node-input-providerType">
-  </div>  
+  </div>
 </script>
 
 <script type="text/html" data-help-name="message">
@@ -2907,8 +2907,8 @@ The pause verb waits a specified number of seconds before continuing to execute 
   </div>
   <div class="form-row">
     <label for="node-input-loop"><i class="icon-tag"></i>Loop</label>
-    <input type="input" id="node-input-loop" placeholder="number of times to repeat"> 
-  </div>  
+    <input type="input" id="node-input-loop" placeholder="number of times to repeat">
+  </div>
 </script>
 
 <script type="text/html" data-help-name="play">
@@ -2930,7 +2930,7 @@ The pause verb waits a specified number of seconds before continuing to execute 
 </dl>
 
 <h3>Details</h3>
-The play action plays an mp3 or wave file into a call.  If early media is checked, the audio will be played over an early media connection, 
+The play action plays an mp3 or wave file into a call.  If early media is checked, the audio will be played over an early media connection,
 if the call has not already been answered.
 
 <h3>References</h3>
@@ -2990,7 +2990,7 @@ The redirect verb retrieves a new URL to execute for the current call.
 </div>
 <div class="form-row">
   <label for="node-input-loop"><i class="icon-tag"></i>Loop</label>
-  <input type="input" id="node-input-loop" placeholder="number of times to repeat"> 
+  <input type="input" id="node-input-loop" placeholder="number of times to repeat">
 </div>
 <fieldset>
   <legend>Speech synthesis options</legend>
@@ -3050,7 +3050,7 @@ The redirect verb retrieves a new URL to execute for the current call.
 </dl>
 
 <h3>Details</h3>
-The say command is used to send synthesized speech to the remote party. 
+The say command is used to send synthesized speech to the remote party.
 The text provided may be either plain text or may use SSML tags.
 <h3>References</h3>
   <ul>
@@ -3262,7 +3262,7 @@ The sip:decline verb rejects an incoming call.
   </dl>
 
   <h3>Details</h3>
-  The dialogflow action connects the call to a Google dialogflow voicebot.  
+  The dialogflow action connects the call to a Google dialogflow voicebot.
   The action completes either when a new application is returned in a response to an eventHook, or the call is terminated from the dialogflow side.
 
   <h3>References</h3>
@@ -3381,14 +3381,14 @@ The sip:decline verb rejects an incoming call.
     <label for="node-input-callHook">Call webhook</label>
     <input type="text" id="node-input-callHook" placeholder="/path">
     <input type="hidden" id="node-input-callHookType">
-  </div>  
+  </div>
 </div>
 <div id="wait-options">
   <div class="form-row">
     <label for="node-input-waitHook">Wait webhook</label>
     <input type="text" id="node-input-waitHook" placeholder="/path">
     <input type="hidden" id="node-input-waitHookType">
-  </div>  
+  </div>
 </div>
 </script>
 
@@ -3414,10 +3414,10 @@ The sip:decline verb rejects an incoming call.
 
 <h3>Details</h3>
 The lcc command is used to perform live call control on a call in progress.
-The call can be terminated, the caller can be muted or unmuted, or the live 
+The call can be terminated, the caller can be muted or unmuted, or the live
 audio feed that is being sent via a <a href="https://docs.jambonz.org/jambonz/#listen">listen</a> verb can be paused or resumed.
 <br/><br/>
-A common use case is to use dtmf captures in a <a href="https://docs.jambonz.org/jambonz/#dial">dial</a> verb to call a webhook 
+A common use case is to use dtmf captures in a <a href="https://docs.jambonz.org/jambonz/#dial">dial</a> verb to call a webhook
 that then uses lcc to modify the state of the call.
 <h3>References</h3>
   <ul>
@@ -3483,7 +3483,7 @@ that then uses lcc to modify the state of the call.
   </dl>
 
 <h3>Details</h3>
-The create call command is used to generate a new outbound call.  
+The create call command is used to generate a new outbound call.
 When the call is answered the specified application's call hook will be invoked.
 <h3>References</h3>
   <ul>
@@ -3538,7 +3538,7 @@ When the call is answered the specified application's call hook will be invoked.
   </dl>
 
 <h3>Details</h3>
-The create message command is used to send an SMS message.  
+The create message command is used to send an SMS message.
 <!--
 <h3>References</h3>
   <ul>

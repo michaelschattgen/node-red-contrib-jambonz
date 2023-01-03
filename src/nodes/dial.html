@@ -5,7 +5,7 @@ RED.nodes.registerType('dial',{
       color: '#bbabaa',
       defaults: {
         name: {value: ''},
-        targets:{value:[{type: 'phone', dest: '', user: '', pass: '', varType: 'str', trunk: ''}]},
+        targets:{value:[{type: 'phone', dest: '', user: '', pass: '', varType: 'str', trunk: '', trunkType: 'str'}]},
         headers: {value: []},
         actionhook: {value: ''},
         actionhookType: {value: 'str'},
@@ -63,6 +63,10 @@ RED.nodes.registerType('dial',{
         $('#node-input-callerid').typedInput({
           types: ['str', 'msg', 'flow', 'global', 'jsonata', 'env'],
           typeField: $('#node-input-calleridType')
+        });
+        $('#node-input-target-property-trunk').typedInput({
+          types: ['num', 'msg', 'flow', 'global', 'jsonata', 'env'],
+          typeField: $('#node-input-target-property-trunk')
         });
         $('#node-input-actionhook').typedInput({
           types: ['str', 'msg', 'flow', 'global', 'jsonata', 'env'],
@@ -143,7 +147,7 @@ RED.nodes.registerType('dial',{
             var row2 = $('<div/>',{style:"display:flex;margin-top:8px;"}).appendTo(fragment);
             var row3 = $('<div/>',{style:"margin-top:8px;"}).appendTo(fragment);
             var row4 = $('<div/>',{style:"display:flex;margin-top:8px;"}).appendTo(fragment);
-            var row5 = $('<div/>',{style:"margin-top:8px;"}).appendTo(fragment);
+            var row5 = $('<div/>',{style:"display:flex;margin-top:8px;"}).appendTo(fragment);
 
             var selectField = $('<select/>',{class:"node-input-target-type",style:"width:110px; margin-right:10px;"})
               .appendTo(row1);
@@ -159,8 +163,8 @@ RED.nodes.registerType('dial',{
               .appendTo(row2);
 
             $('<input/>',{
-              class:"node-input-target-property-authuser", 
-              type:"text", 
+              class:"node-input-target-property-authuser",
+              type:"text",
               placeholder: '(if required by remote endpoint)'
             })
               .appendTo(row2);
@@ -168,8 +172,8 @@ RED.nodes.registerType('dial',{
             $('<label style="padding-top:8px; padding-right:20px">Auth Password:</label>')
               .appendTo(row3);
             $('<input/>',{
-              class:"node-input-target-property-authpassword", 
-              type:"text", 
+              class:"node-input-target-property-authpassword",
+              type:"text",
               placeholder: '(if required by remote endpoint)'
             })
               .appendTo(row3);
@@ -177,29 +181,30 @@ RED.nodes.registerType('dial',{
             $('<label style="padding-top:8px; padding-right:20px">Trunk:</label>')
               .appendTo(row5);
 
-            $('<input/>',{
+            var trunkName = $('<input/>',{
               class:"node-input-target-property-trunk",
               type:"text",
               placeholder: 'Specify the name of the trunk used for this outbound call'
             })
-              .appendTo(row5);
-            
+              .appendTo(row5)
+              .typedInput({types: ['str', 'msg', 'flow', 'global', 'jsonata', 'env']});
+
             selectField.on('change', function() {
               var type = $(this).val();
               console.log(`type changed to ${type}`);
               var input = $(this).parent().find('input.red-ui-typedInput-input');
               input.focus();
               switch (type) {
-                case 'phone': 
+                case 'phone':
                   input.attr('placeholder', 'E.164 number to dial');
                   break;
                 case 'teams':
                   input.attr('placeholder', 'Microsoft Teams phone number or extension');
                   break;
-                case 'user': 
+                case 'user':
                   input.attr('placeholder', 'user@domain');
                   break;
-                case 'sip': 
+                case 'sip':
                   input.attr('placeholder', 'sip:number@ip-address');
                   break;
               }
@@ -231,8 +236,9 @@ RED.nodes.registerType('dial',{
 
             switch (target.type) {
               case 'phone':
-                trunkfield.val(target.trunk);
-              case 'sip': 
+                trunkfield.typedInput('type', target.trunkType);
+                trunkfield.typedInput('value', target.trunk);
+              case 'sip':
                 userfield.val(target.user);
                 passfield.val(target.pass);
               default:
@@ -253,6 +259,7 @@ RED.nodes.registerType('dial',{
             user: '',
             pass: '',
             trunk: '',
+            trunkType: 'str',
             varType: 'str'
           }
           this.targets = [target];
@@ -276,14 +283,14 @@ RED.nodes.registerType('dial',{
             let fragment = document.createDocumentFragment();
             var row1 = $('<div/>',{style:"display:flex;"}).appendTo(fragment);
             $('<input/>', {
-              class:"node-input-header-property-name", 
-              type:"text", 
+              class:"node-input-header-property-name",
+              type:"text",
               placeholder: 'SIP Header'
             })
               .appendTo(row1);
             $('<input/>', {
-              class:"node-input-value-property-name", 
-              type:"text", 
+              class:"node-input-value-property-name",
+              type:"text",
               placeholder: 'value'
             })
               .appendTo(row1);
@@ -321,18 +328,20 @@ RED.nodes.registerType('dial',{
           var dest    = target.find('.node-input-target-property-name').typedInput('value');
           var user = target.find('.node-input-target-property-authuser').val();
           var pass = target.find('.node-input-target-property-authpassword').val();
-          var trunk = target.find('.node-input-target-property-trunk').val();
+          var trunkType = target.find('.node-input-target-property-trunk').typedInput('type');
+          var trunk = target.find('.node-input-target-property-trunk').typedInput('value');
           if (!['phone', 'user', 'sip', 'teams'].includes(type) || 0 === dest.length) return;
 
           var t = {
             type,
             varType,
-            dest
+            dest,
           };
           if ('sip' === type && user.length > 0 && pass.length > 0) {
             Object.assign(t, {user, pass});
           }
           if ('phone' === type && trunk.length > 0) {
+            t.trunkType = trunkType;
             t.trunk = trunk;
           }
           node.targets.push(t);
@@ -499,7 +508,7 @@ RED.nodes.registerType('dial',{
           <label for="node-input-diarizationmax">Max speaker count</label>
           <input type="text" id="node-input-diarizationmax" placeholder="6">
           <input type="hidden" id="node-input-diarizationmaxType">
-        </div>    
+        </div>
         <div class="form-row">
           <label for="node-input-interactiontype">Type of Interaction</label>
           <select id="node-input-interactiontype">
@@ -565,52 +574,52 @@ RED.nodes.registerType('dial',{
 <script type="text/html" data-help-name="dial">
     <p>Dial out to a phone number, registered user, sip endpoint, or Microsoft teams user</p>
     <h3>Properties</h3>
-      <p><code>Dial target - phone</code> - 
+      <p><code>Dial target - phone</code> -
       <dd>A telephone number to dial in E.164 format</p>
-      <p><code>Dial target - user</code> - 
+      <p><code>Dial target - user</code> -
       <dd>A registered sip user in user@domain format</p>
-      <p><code>Dial target - sip</code> - 
+      <p><code>Dial target - sip</code> -
       <dd>A sip endpoint in sip uri format, optionally with sip username and password</p>
-      <p><code>Dial target - teams</code> - 
+      <p><code>Dial target - teams</code> -
       <dd>A phone number that is associated with a user in the Microsoft Teams tenant associated with this account</p>
-      <p><code>Action hook</code> - 
+      <p><code>Action hook</code> -
       <dd>webhook to invoke when the call ends.	</p>
-      <p><code>Answer on bridge</code> - 
+      <p><code>Answer on bridge</code> -
       <dd>If set to true, the inbound call will ring until the number that was dialed answers the call, and at that point a 200 OK will be sent on the inbound leg. If false, the inbound call will be answered immediately as the outbound call is placed.</p>
-      <p><code>Action hook</code> - 
+      <p><code>Action hook</code> -
       <dd>webhook to invoke when the call ends.	</p>
-      <p><code>Caller ID</code> - 
+      <p><code>Caller ID</code> -
       <dd>Calling phone number to display on outgoing call.</p>
-      <p><code>Confirm hook</code> - 
+      <p><code>Confirm hook</code> -
       <dd>webhook for an application to run on the callee's end after the dialed number answers but before the call is connected.</p>
-      <p><code>Dial music</code> - 
+      <p><code>Dial music</code> -
       <dd>url that specifies a .wav or .mp3 audio file of custom audio or ringback to play to the caller while the outbound call is ringing.</p>
-      <p><code>Dtmf capture</code> - 
+      <p><code>Dtmf capture</code> -
       <dd>an array of strings that represent dtmf sequence which, when detected, will trigger a mid-call notification to the application via the configured dtmfHook.</p>
-      <p><code>DTMF hook</code> - 
+      <p><code>DTMF hook</code> -
       <dd>webhook to call when a dtmfCapture entry is matched.</p>
-      <p><code>Time limit</code> - 
+      <p><code>Time limit</code> -
       <dd>max length of call in seconds.</p>
-      <p><code>Time limit</code> - 
+      <p><code>Time limit</code> -
       <dd>max length of call in seconds.</p>
-      <p><code>Timeout</code> - 
+      <p><code>Timeout</code> -
       <dd>ring no answer timeout in seconds.</p>
-      <p><code>Websocket server url</code> - 
+      <p><code>Websocket server url</code> -
       <dd>url of remote websocket server to send live audio to.</p>
-      <p><code>Transcription hook</code> - 
+      <p><code>Transcription hook</code> -
       <dd>webhook to call when a transcription is received.</p>
-      <p><code>Language</code> - 
+      <p><code>Language</code> -
       <dd>language to use for speech transcription.</p>
-      <p><code>Send interim transcriptions</code> - 
+      <p><code>Send interim transcriptions</code> -
       <dd>if true interim transcriptions are sent.</p>
 
-  
+
     <h3>Outputs</h3>
     <dl class="message-properties">
       <dt>jambonz<span class="property-type">object</span></dt>
       <dd> <code>msg.jambonz</code> will contain any previous actions provided to the input with the new <code>dial</code> action appended  </dd>
     </dl>
-  
+
     <h3>Details</h3>
     The dial verb is used to create a new call by dialing out to a number, a registered sip user, or sip endpoint
       <ul>
